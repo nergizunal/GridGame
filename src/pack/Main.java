@@ -1,8 +1,10 @@
 package pack;
-
+import java.lang.reflect.Field;
 public class Main {
     public static void main(String [] args){
-        GameBoard g = new GameBoard(10);
-        g.printGrid();
+        Game gb = new Game();
+        gb.startGame("initials1.txt");
+        gb.makeMovements("commands.txt");
+
     }
 }

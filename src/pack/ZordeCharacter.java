@@ -1,7 +1,7 @@
 package pack;
 
-public class ZordeCharacter extends java.lang.Character {
-    public ZordeCharacter(int a, int b){
-        super(a,b);
+public class ZordeCharacter extends Character {
+    public ZordeCharacter(String name){
+        super(name);
     }
 }

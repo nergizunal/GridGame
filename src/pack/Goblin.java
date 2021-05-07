@@ -1,7 +1,10 @@
 package pack;
 
 public class Goblin extends ZordeCharacter {
-    public Goblin(int a, int b){
-        super(a,b);
+    public Goblin( String name){
+        super(name);
+        this.attackPoint = Constants.goblinAP;
+        this.hitPoint = 80;
+        this.moveSteps = Constants.goblinMaxMove;
     }
 }
