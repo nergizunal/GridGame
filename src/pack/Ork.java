@@ -1,4 +1,6 @@
-public class Ork extends ZordeCharacter{
+package pack;
+
+public class Ork extends ZordeCharacter {
     public Ork(int a, int b){
         super(a,b);
     }

@@ -1,8 +1,10 @@
+package pack;
+
 import java.util.HashSet;
 
 public class GameBoard {
     public int size;
-    public HashSet<Character> chars = new HashSet<Character>();
+    public HashSet<java.lang.Character> chars = new HashSet<java.lang.Character>();
     public String grid[][];
     public GameBoard(int size){
         this.size = size;

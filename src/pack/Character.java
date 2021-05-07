@@ -1,3 +1,5 @@
+package pack;
+
 public class Character {
     protected int hitPoint;
     protected int attackPoint;

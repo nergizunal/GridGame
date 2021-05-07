@@ -1,4 +1,6 @@
-public class CallianceCharacter extends Character{
+package pack;
+
+public class CallianceCharacter extends Character {
     public CallianceCharacter(int a, int b){
         super(a,b);
     }

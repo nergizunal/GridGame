@@ -1,4 +1,6 @@
-public class Goblin extends ZordeCharacter{
+package pack;
+
+public class Goblin extends ZordeCharacter {
     public Goblin(int a, int b){
         super(a,b);
     }
