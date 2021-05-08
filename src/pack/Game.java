@@ -80,6 +80,7 @@ public class Game {
         }
         this.gb.updateGrid();
         this.gb.printGrid();
+        this.gb.currentHPs();
     }
     public void makeMovements(String commandsFile) {
 
@@ -109,6 +110,7 @@ public class Game {
                 this.move(c,moveX,moveY);
                 this.gb.updateGrid();
                 this.gb.printGrid();
+                this.gb.currentHPs();
                 if(this.winner != null){
                     System.out.println("Winner:" + winner );
                     break;
@@ -154,20 +156,38 @@ public class Game {
                 System.out.print("");
             }
         }
+        int last = 0;
         try {
             while (iterX.hasNext()) {
                 while (iterY.hasNext()) {
                     x += iterX.next();
                     y += iterY.next();
-                    if ((this.gb.grid[x][y] instanceof CallianceCharacter && c instanceof CallianceCharacter)
-                            || this.gb.grid[x][y] instanceof ZordeCharacter && c instanceof ZordeCharacter) {
+                    System.out.println(this.gb.grid[x][y]);
+                    if(this.isAFellow(c,this.gb.grid[x][y])) {
+
                         br = true;
                         break;
                     }
+                    else
+                        last +=1;
                     this.attack(c);
                 }
                 if (br)
                     break;
+            }
+
+            if(last == 0){
+                System.out.println("here");
+                moveX.clear();
+                moveY.clear();
+            }
+            else if(last < moveX.size()){
+                int i = last;
+                while(i < moveX.size()) {
+                    moveX.remove(i);
+                    moveY.remove(i);
+                    i++;
+                }
             }
         }
         catch (IndexOutOfBoundsException IE){
@@ -179,7 +199,20 @@ public class Game {
 
 
     }
+    public boolean isAFellow(Character c1, Character c2){
+        if(c2 instanceof Troll)
+            System.out.println("Trol");
+        if(c2 !=null)
+            System.out.println(c2.getClass());
+        if(c1 instanceof Elf ||c1 instanceof Human || c1 instanceof Dwarf ){
+            if(c2 instanceof Elf ||c2 instanceof Human || c2 instanceof Dwarf )
+                return true;
+        }
+        else if(c2 instanceof Ork ||c2 instanceof Goblin || c2 instanceof Troll )
+            return true;
+        return false;
 
+    }
     public void heal(Ork c){
         int startX = c.getX() - 1;
         int startY = c.getY() - 1;

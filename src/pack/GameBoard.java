@@ -35,10 +35,17 @@ public class GameBoard {
 
         for(int i = 0; i <= this.size + 1 ; i ++)
             System.out.print("**");
+        System.out.println();
+    }
+    public void currentHPs(){
+        Iterator<Character> iter = this.chars.iterator();
+        System.out.println("\n");
+        while(iter.hasNext()){
+            System.out.println(iter.next().currentHP());
+        }
     }
     public Character getByName(String name){
-        Iterator<Character> iter
-                = this.chars.iterator();
+        Iterator<Character> iter = this.chars.iterator();
         while(iter.hasNext()){
             Character c= iter.next();
             if(c.name.equals(name))

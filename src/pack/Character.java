@@ -22,7 +22,9 @@ public class Character {
     public String toString(){
         return this.name;
     }
-
+    public String currentHP(){
+        return this.name + "-->" + this.hitPoint + "-->";
+    }
 
     public int getHitPoint() {
         return hitPoint;
