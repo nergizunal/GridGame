@@ -10,12 +10,12 @@ import java.lang.*;
 public class Game {
 
     private GameBoard gb;
-    private int ZodecNum;
-    private int CallianceNum;
     private String winner;
+    private int ZordeNum;
+    private int CallianceNum;
     public Game(){
-        this.ZodecNum = 0;
-        this.CallianceNum = 0;
+        this.ZordeNum += 1;
+        this.CallianceNum += 1;
         this.winner = null;
     }
     public void startGame(String inputFile){
@@ -23,8 +23,13 @@ public class Game {
         try {
             reader = new BufferedReader(new FileReader(inputFile));
             String line = reader.readLine();
-            line = reader.readLine();
-            int size = Integer.parseInt(line.split("x")[0]);
+            int size ;
+            if(line.equals("BOARD")) {
+                line = reader.readLine();
+                size = Integer.parseInt(line.split("x")[0]);
+            }
+            else
+                size = 0;
             gb = new GameBoard(size);
             line = reader.readLine();
             String [] s;
@@ -70,7 +75,6 @@ public class Game {
                         }
                         line = reader.readLine();
                     }
-
                 }
                 line = reader.readLine();
             }
@@ -88,21 +92,22 @@ public class Game {
         try {
             reader = new BufferedReader(new FileReader(commandsFile));
             String line = reader.readLine();
-            String[] s;
             Character c;
             System.out.println();
-            ArrayList<Integer> moveX ;
+            ArrayList<Integer> moveX;
             ArrayList<Integer> moveY;
             while (line != null) {
-                moveX = new ArrayList<Integer>();
-                moveY = new ArrayList<Integer>();
+                moveX = new ArrayList<>();
+                moveY = new ArrayList<>();
                 String[] t = line.split(" ");
                 c = this.gb.getByName(t[0]);
                 if(c == null)
                     continue;
                 String[] points = t[1].split(";");
-                if(points.length > 2*c.getMoveSteps())
+                if(points.length > 2*c.getMoveSteps()) {
+                    System.out.println("Error : Move sequence contains wrong number of move steps. Input line ignored.");
                     break;
+                }
                 for(int i = 0; i<points.length; i +=2){
                     moveX.add(Integer.parseInt(points[i]));
                     moveY.add(Integer.parseInt(points[i + 1]));
@@ -111,8 +116,8 @@ public class Game {
                 this.gb.updateGrid();
                 this.gb.printGrid();
                 this.gb.currentHPs();
-                if(this.winner != null){
-                    System.out.println("Winner:" + winner );
+                if(this.isThereAWinner()){
+                    System.out.println("Game Finished\n" + winner +" Wins");
                     break;
                 }
 
@@ -125,19 +130,31 @@ public class Game {
     public void addChar(Character c){
         this.gb.chars.add(c);
         if(c instanceof ZordeCharacter)
-            this.ZodecNum +=1;
+            this.ZordeNum += 1;
         if(c instanceof CallianceCharacter)
-            this.CallianceNum +=1;
+            this.CallianceNum += 1;
     }
-    public void removeChar(Character c){
-        if(c instanceof ZordeCharacter)
-            if(this.ZodecNum ==1)
-                this.winner = "Calliance";
-        if(c instanceof CallianceCharacter)
-            if(this.CallianceNum == 1);
-                this.winner = "Zordec";
-        if(this.gb.chars.contains(c))
-            this.gb.chars.remove(c);
+    public boolean isThereAWinner(){
+        Iterator<Character> iter = this.gb.chars.iterator();
+        int ZodecNum = 0;
+        int CallianceNum = 0;
+        while(iter.hasNext()){
+            Character c = iter.next();
+            if(c instanceof ZordeCharacter)
+                ZodecNum +=1;
+            else if(c instanceof CallianceCharacter)
+                CallianceNum +=1;
+        }
+        if(ZodecNum == 0) {
+            winner = "Calliance";
+            return true;
+        }
+        else if(CallianceNum== 0) {
+            winner = "Zorde";
+            return true;
+        }
+        return false;
+
     }
 
     public void move( Character c, ArrayList<Integer> moveX, ArrayList<Integer> moveY){
@@ -147,111 +164,48 @@ public class Game {
                 = moveX.iterator();
         Iterator<Integer> iterY
                 = moveY.iterator();
-        boolean br = false;
-        if(c instanceof Ork) {
-            try {
-                this.heal((Ork)c);
-            }
-             catch (Exception e) {
-                System.out.print("");
-            }
-        }
+        boolean fight = false;
         int last = 0;
         try {
-            while (iterX.hasNext()) {
-                while (iterY.hasNext()) {
+            while (iterX.hasNext() && iterY.hasNext()) {
                     x += iterX.next();
                     y += iterY.next();
-                    System.out.println(this.gb.grid[x][y]);
-                    if(this.isAFellow(c,this.gb.grid[x][y])) {
-
-                        br = true;
-                        break;
-                    }
+                    if(this.gb.grid[x][y] != null)
+                        if(this.isAFellow(c,this.gb.grid[x][y]))
+                            break;
+                        else {
+                            last += 1;
+                            fight = true;
+                            break;
+                        }
                     else
                         last +=1;
-                    this.attack(c);
-                }
-                if (br)
-                    break;
             }
 
-            if(last == 0){
-                System.out.println("here");
-                moveX.clear();
-                moveY.clear();
-            }
-            else if(last < moveX.size()){
+            if(last < moveX.size()){
                 int i = last;
                 while(i < moveX.size()) {
                     moveX.remove(i);
                     moveY.remove(i);
                     i++;
                 }
+                c.move(gb, moveX, moveY,false, fight);
             }
+            c.move(gb, moveX, moveY,true, fight);
+            c.setX(x);
+            c.setY(y);
         }
         catch (IndexOutOfBoundsException IE){
             this.gb.printGrid();
             System.out.println("Error : Game board boundaries are exceeded. Input line ignored");
         }
-        c.setX(x);
-        c.setY(y);
-
 
     }
     public boolean isAFellow(Character c1, Character c2){
-        if(c2 instanceof Troll)
-            System.out.println("Trol");
-        if(c2 !=null)
-            System.out.println(c2.getClass());
-        if(c1 instanceof Elf ||c1 instanceof Human || c1 instanceof Dwarf ){
-            if(c2 instanceof Elf ||c2 instanceof Human || c2 instanceof Dwarf )
-                return true;
+        if(c1 instanceof ZordeCharacter ){
+            return c2 instanceof ZordeCharacter;
         }
-        else if(c2 instanceof Ork ||c2 instanceof Goblin || c2 instanceof Troll )
-            return true;
-        return false;
-
-    }
-    public void heal(Ork c){
-        int startX = c.getX() - 1;
-        int startY = c.getY() - 1;
-        for(int i = startX; i <startX + 2; i++){
-            for(int j = startY; j <startX + 2; j++) {
-                if(this.gb.grid[i][j] instanceof ZordeCharacter) {
-                    try {
-                        this.gb.grid[i][j].updateHitPoint(c.getHealPoints());
-                    }
-                    catch(IndexOutOfBoundsException IE){
-                        System.out.print("");
-                    }
-                }
-            }
-        }
-    }
-    public void attack(Character c){
-        int startX = c.getX() - 1;
-        int startY = c.getY() - 1;
-        for(int i = startX; i <startX + 2; i++){
-            for(int j = startY; j <startX + 2; j++){
-                try {
-                    if ((this.gb.grid[i][j] instanceof CallianceCharacter && c instanceof ZordeCharacter) || (this.gb.grid[i][j] instanceof ZordeCharacter && c instanceof CallianceCharacter)) {
-                        this.gb.grid[i][j].updateHitPoint(-1 * c.getAttackPoint());
-                        if (this.gb.grid[i][j].getHitPoint() <= 0)
-                            this.gb.chars.remove(this.gb.grid[i][j]);
-
-
-                    }
-                }
-                catch (IndexOutOfBoundsException IE){
-                    System.out.print("");
-                }
-            }
-        }
+        else return c2 instanceof CallianceCharacter;
     }
 
-
-    public void currentBoard(){
-        this.gb.printGrid();
-    }
 }

@@ -1,7 +1,6 @@
 package pack;
 
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 public class GameBoard {
     public int size;
@@ -12,11 +11,28 @@ public class GameBoard {
         this.grid = new Character[size][size];
     }
     public void updateGrid(){
+
+        this.updateChars();
         for(int i = 0; i < this.size; i++)
             for(int j = 0; j < this.size; j++)
                 this.grid[i][j] = null;
         for(Character c: this.chars)
             this.grid[c.getX()][c.getY()] = c;
+    }
+    public void updateChars(){
+        Iterator<Character> iter = this.chars.iterator();
+        Character c;
+        ArrayList<Character> rm = new ArrayList<Character>();
+        while(iter.hasNext()){
+            c = iter.next();
+            if(c != null)
+                if (c.getHitPoint() <= 0)
+                    rm.add(c);
+        }
+        iter = rm.iterator();
+        while(iter.hasNext()){
+            this.chars.remove(iter.next());
+        }
     }
     public void printGrid(){
         for(int i = 0; i <= this.size + 1 ; i ++)
@@ -38,11 +54,18 @@ public class GameBoard {
         System.out.println();
     }
     public void currentHPs(){
-        Iterator<Character> iter = this.chars.iterator();
+        ArrayList<Character> arr = this.sortChars();
+        Iterator<Character> iter = arr.iterator();
         System.out.println("\n");
         while(iter.hasNext()){
             System.out.println(iter.next().currentHP());
         }
+        System.out.println();
+    }
+    public ArrayList<Character> sortChars(){
+        ArrayList<Character> arr = new ArrayList<>(this.chars);
+        Collections.sort(arr,Character.charComparator);
+        return arr;
     }
     public Character getByName(String name){
         Iterator<Character> iter = this.chars.iterator();

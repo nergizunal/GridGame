@@ -1,5 +1,8 @@
 package pack;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class Ork extends ZordeCharacter {
     private int healPoints;
     public Ork( String name){
@@ -9,9 +12,60 @@ public class Ork extends ZordeCharacter {
         this.moveSteps = Constants.orkMaxMove;
         this.healPoints = Constants.orkHealPoints;
         this.hitPoint = 200;
+        this.defaultHitPoints = 200;
 
     }
-    public int getHealPoints(){
-        return this.healPoints;
+    public void heal(GameBoard gb){
+        int startX = this.x - 1;
+        int startY = this.y - 1;
+        for(int i = startX; i <startX + 3; i++){
+            for(int j = startY; j <startX + 3; j++){
+                try {
+                    if ( gb.grid[i][j] instanceof ZordeCharacter ) {
+                        gb.grid[i][j].updateHitPoint(this.healPoints);
+                    }
+                }
+                catch (IndexOutOfBoundsException IE){
+                    System.out.print("");
+                }
+            }
+        }
+    }
+
+    @Override
+    public void move(GameBoard gb, ArrayList<Integer> moveX, ArrayList<Integer> moveY, boolean isFinalized, boolean fight){
+        this.heal(gb);
+        int lastX = moveX.remove(moveX.size() -1);
+        int lastY = moveY.remove(moveY.size() -1);
+        Iterator<Integer> iterX
+                = moveX.iterator();
+        Iterator<Integer> iterY
+                = moveY.iterator();
+        while (iterX.hasNext() && iterY.hasNext()) {
+            this.x += iterX.next();
+            this.y += iterY.next();
+        }
+        this.x += lastX;
+        this.y += lastY;
+        if(fight)
+            this.fightForDeath(gb.grid[x][y]);
+        else
+            this.attack(gb);
+    }
+    public void attack(GameBoard gb){
+        int startX = this.x - 1;
+        int startY = this.y - 1;
+        for(int i = startX; i <startX + 3; i++){
+            for(int j = startY; j <startY + 3; j++){
+                try {
+                    if ( gb.grid[i][j] instanceof CallianceCharacter)
+                        gb.grid[i][j].updateHitPoint(-1 * this.getAttackPoint());
+
+                }
+                catch (IndexOutOfBoundsException IE){
+                    System.out.print("");
+                }
+            }
+        }
     }
 }
