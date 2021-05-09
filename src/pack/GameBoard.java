@@ -4,8 +4,8 @@ import java.util.*;
 
 public class GameBoard {
     public int size;
-    public HashSet<Character> chars = new HashSet<Character>();
-    public Character grid[][];
+    public HashSet<Character> chars = new HashSet<>();
+    public Character[][] grid;
     public GameBoard(int size){
         this.size = size;
         this.grid = new Character[size][size];
@@ -16,13 +16,15 @@ public class GameBoard {
         for(int i = 0; i < this.size; i++)
             for(int j = 0; j < this.size; j++)
                 this.grid[i][j] = null;
-        for(Character c: this.chars)
+
+        for (Character c : this.chars)
             this.grid[c.getX()][c.getY()] = c;
+
     }
     public void updateChars(){
         Iterator<Character> iter = this.chars.iterator();
         Character c;
-        ArrayList<Character> rm = new ArrayList<Character>();
+        ArrayList<Character> rm = new ArrayList<>();
         while(iter.hasNext()){
             c = iter.next();
             if(c != null)
@@ -68,18 +70,14 @@ public class GameBoard {
     }
     public ArrayList<Character> sortChars(){
         ArrayList<Character> arr = new ArrayList<>(this.chars);
-        Collections.sort(arr,Character.charComparator);
+        arr.sort(Character.charComparator);
         return arr;
     }
     public Character getByName(String name){
-        Iterator<Character> iter = this.chars.iterator();
-        while(iter.hasNext()){
-            Character c= iter.next();
-            if(c.name.equals(name))
+        for (Character c : this.chars) {
+            if (c.name.equals(name))
                 return c;
         }
         return null;
     }
-
-
 }

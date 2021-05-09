@@ -8,5 +8,6 @@ public class Main {
         gb.startGame(i);
         gb.makeMovements(c);
         gb.printResult(o);
+
     }
 }

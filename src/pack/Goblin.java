@@ -31,24 +31,6 @@ public class Goblin extends ZordeCharacter {
             this.fightForDeath(gb.grid[x][y]);
         else
             this.attack(gb);
-
     }
-    public void attack(GameBoard gb){
-        int startX = this.x - 1;
-        int startY = this.y - 1;
-        for(int i = startX; i <startX + 3; i++){
-            for(int j = startY; j <startY + 3; j++){
-                try {
-                    if ( gb.grid[i][j] instanceof CallianceCharacter)
-                        gb.grid[i][j].updateHitPoint(-1 * this.getAttackPoint());
-
-                }
-                catch (IndexOutOfBoundsException IE){
-                    System.out.print("");
-                }
-            }
-        }
-    }
-
 
 }

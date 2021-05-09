@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 public class Human extends CallianceCharacter {
     public Human( String name){
-        super( name);
+        super(name);
         this.attackPoint = Constants.humanAP;
         this.hitPoint = 100;
         this.defaultHitPoints = 100;
@@ -17,32 +17,16 @@ public class Human extends CallianceCharacter {
                 = moveX.iterator();
         Iterator<Integer> iterY
                 = moveY.iterator();
-        while (iterX.hasNext() && iterY.hasNext()) {
+        while (iterX.hasNext() && iterY.hasNext()) { //iterate to end
             this.x += iterX.next();
             this.y += iterY.next();
         }
-        gb.updateGrid();
-        if(fight)
+        if(fight) //if there is a enemy, fightForDeath
             this.fightForDeath(gb.grid[x][y]);
-        else
+        else //else attack at last move
             this.attack(gb);
 
     }
-    public void attack(GameBoard gb){
-        int startX = this.x - 1;
-        int startY = this.y - 1;
-        for(int i = startX; i <startX + 3; i++){
-            for(int j = startY; j <startY + 3; j++){
-                try {
-                    if ( gb.grid[i][j] instanceof ZordeCharacter)
-                        gb.grid[i][j].updateHitPoint(-1 * this.getAttackPoint());
 
-                }
-                catch (IndexOutOfBoundsException IE){
-                    System.out.print("");
-                }
-            }
-        }
-    }
 }
 

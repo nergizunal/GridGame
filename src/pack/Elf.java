@@ -43,7 +43,6 @@ public class Elf extends CallianceCharacter{
             this.attack(gb);
 
         }
-        gb.updateGrid();
         this.x += lastX;
         this.y += lastY;
         if(isFinalized) {
@@ -57,20 +56,6 @@ public class Elf extends CallianceCharacter{
         }
 
     }
-    public void attack(GameBoard gb){
-        int startX = this.x - 1;
-        int startY = this.y - 1;
-        for(int i = startX; i <startX + 3; i++){
-            for(int j = startY; j <startY + 3; j++){
-                try {
-                    if ( gb.grid[i][j] instanceof Ork || gb.grid[i][j] instanceof Troll || gb.grid[i][j] instanceof Goblin)
-                        gb.grid[i][j].updateHitPoint(-1 * this.getAttackPoint());
-                }
-                catch (IndexOutOfBoundsException IE){
 
-                }
-            }
-        }
-    }
 
 }

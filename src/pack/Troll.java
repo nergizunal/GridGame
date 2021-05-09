@@ -22,13 +22,13 @@ public class Troll extends ZordeCharacter {
             this.y += iterY.next();
 
         }
-        gb.updateGrid();
         if(fight)
             this.fightForDeath(gb.grid[x][y]);
         else
             this.attack(gb);
 
     }
+    @Override
     public void attack(GameBoard gb){
         int startX = this.x - 1;
         int startY = this.y - 1;

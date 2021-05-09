@@ -106,31 +106,40 @@ public class Game {
                 moveY = new ArrayList<>();
                 String[] t = line.split(" ");
                 c = this.gb.getByName(t[0]);
-                if(c == null)
+                if(c == null) {
+                    line = reader.readLine();
                     continue;
+                }
                 String[] points = t[1].split(";");
-                if(points.length > 2*c.getMoveSteps()) {
-                    output += "Error : Move sequence contains wrong number of move steps. Input line ignored.\n";
-                    break;
+                System.out.println("points.length "+points.length );
+                if(points.length != 2*c.getMoveSteps()) {
+                    output += "Error : Move sequence contains wrong number of move steps. Input line ignored.\n\n";
+                    line = reader.readLine();
+                    continue;
                 }
                 for(int i = 0; i<points.length; i +=2){
                     moveX.add(Integer.parseInt(points[i]));
                     moveY.add(Integer.parseInt(points[i + 1]));
                 }
-                this.move(c,moveX,moveY);
-                this.gb.updateGrid();
-                output += this.gb.printGrid();
-                output +=this.gb.currentHPs();
+
+                if( this.move(c, moveX, moveY)) {
+                    this.gb.updateGrid();
+                    output += this.gb.printGrid();
+                    output += this.gb.currentHPs();
+                }
+
                 if(this.isThereAWinner()){
                     output += "Game Finished\n" + winner +" Wins\n";
                     System.out.print(output);
                     break;
                 }
                 line = reader.readLine();
+
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.print(output);
     }
     public void addChar(Character c){
         this.gb.chars.add(c);
@@ -162,7 +171,8 @@ public class Game {
 
     }
 
-    public void move( Character c, ArrayList<Integer> moveX, ArrayList<Integer> moveY){
+    public boolean move( Character c, ArrayList<Integer> moveX, ArrayList<Integer> moveY){
+        boolean res = true;
         int x = c.getX();
         int y = c.getY();
         Iterator<Integer> iterX
@@ -171,11 +181,17 @@ public class Game {
                 = moveY.iterator();
         boolean fight = false;
         int last = 0;
+        int tempX = x;
+        int tempY = y;
         try {
             while (iterX.hasNext() && iterY.hasNext()) {
+                    tempX = x;
+                    tempY = y;
                     x += iterX.next();
                     y += iterY.next();
-                    if(this.gb.grid[x][y] != null)
+                    Character c1 = this.gb.grid[x][y];
+
+                    if(c1 != null  && this.gb.grid[x][y] != c)
                         if(this.isAFellow(c,this.gb.grid[x][y]))
                             break;
                         else {
@@ -186,7 +202,13 @@ public class Game {
                     else
                         last +=1;
             }
-
+        }
+        catch (IndexOutOfBoundsException IE){
+            x = tempX;
+            y = tempY;
+            output += "Error : Game board boundaries are exceeded. Input line ignored\n\n";
+            res = false;
+        }
             if(last < moveX.size()){
                 int i = last;
                 while(i < moveX.size()) {
@@ -194,17 +216,14 @@ public class Game {
                     moveY.remove(i);
                     i++;
                 }
-                c.move(gb, moveX, moveY,false, fight);
+                if(moveX.size() != 0)
+                    c.move(gb, moveX, moveY,false, fight);
             }
-            c.move(gb, moveX, moveY,true, fight);
+            else if(moveX.size() != 0)
+                c.move(gb, moveX, moveY,true, fight);
             c.setX(x);
             c.setY(y);
-        }
-        catch (IndexOutOfBoundsException IE){
-            output += this.gb.printGrid();
-            output += "Error : Game board boundaries are exceeded. Input line ignored\n";
-        }
-
+            return res;
     }
     public boolean isAFellow(Character c1, Character c2){
         if(c1 instanceof ZordeCharacter ){
@@ -219,10 +238,12 @@ public class Game {
         }
         catch (IOException e){
             System.out.println("An error occurred.");
-            e.printStackTrace();
+
         }
         try {
+            this.writer.flush();
             this.writer.write(this.output);
+            this.writer.close();
 
         }
         catch (IOException e) {
