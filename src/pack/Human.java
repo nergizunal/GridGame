@@ -20,8 +20,8 @@ public class Human extends CallianceCharacter {
         while (iterX.hasNext() && iterY.hasNext()) {
             this.x += iterX.next();
             this.y += iterY.next();
-
         }
+        gb.updateGrid();
         if(fight)
             this.fightForDeath(gb.grid[x][y]);
         else

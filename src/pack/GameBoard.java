@@ -34,33 +34,37 @@ public class GameBoard {
             this.chars.remove(iter.next());
         }
     }
-    public void printGrid(){
+    public String printGrid(){
+        String output = "";
         for(int i = 0; i <= this.size + 1 ; i ++)
-            System.out.print("**");
-        System.out.println();
+            output += "**";
+        output += "\n";
 
         for(int i = 0; i < this.size; i++){
-            System.out.print("* ");
+            output += "* ";
             for(int j = 0; j < this.size; j++)
                 if(this.grid[j][i] == null)
-                    System.out.print("  ");
+                    output += "  ";
                 else
-                    System.out.print(this.grid[j][i]);
-            System.out.println(" *");
+                    output += this.grid[j][i];
+            output += " *\n";
         }
 
         for(int i = 0; i <= this.size + 1 ; i ++)
-            System.out.print("**");
-        System.out.println();
+            output += "**";
+        output += "\n";
+        return output;
     }
-    public void currentHPs(){
+    public String currentHPs(){
         ArrayList<Character> arr = this.sortChars();
         Iterator<Character> iter = arr.iterator();
-        System.out.println("\n");
+        String output = "";
+        output += "\n";
         while(iter.hasNext()){
-            System.out.println(iter.next().currentHP());
+            output += iter.next().currentHP() + "\n";
         }
-        System.out.println();
+        output += "\n";
+        return output;
     }
     public ArrayList<Character> sortChars(){
         ArrayList<Character> arr = new ArrayList<>(this.chars);
@@ -76,5 +80,6 @@ public class GameBoard {
         }
         return null;
     }
+
 
 }

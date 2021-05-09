@@ -64,6 +64,9 @@ abstract public class Character  {
         if(c == null)
             return false;
         c.updateHitPoint(-1*this.attackPoint);
+        if(c.hitPoint <= 0 || this.hitPoint <=0)
+            return false;
+
         if(c.hitPoint > this.hitPoint){
             c.updateHitPoint(-1*this.hitPoint);
             this.updateHitPoint(-1*this.hitPoint);

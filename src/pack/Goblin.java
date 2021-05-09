@@ -13,6 +13,8 @@ public class Goblin extends ZordeCharacter {
     }
     @Override
     public void move(GameBoard gb, ArrayList<Integer> moveX, ArrayList<Integer> moveY, boolean isFinalized, boolean fight){
+        int lastX = moveX.remove(moveX.size() -1);
+        int lastY = moveY.remove(moveY.size() -1);
         Iterator<Integer> iterX
                 = moveX.iterator();
         Iterator<Integer> iterY
@@ -22,9 +24,13 @@ public class Goblin extends ZordeCharacter {
             this.y += iterY.next();
             this.attack(gb);
         }
-        this.attack(gb);
+        gb.updateGrid();
+        this.x += lastX;
+        this.y += lastY;
         if(fight)
             this.fightForDeath(gb.grid[x][y]);
+        else
+            this.attack(gb);
 
     }
     public void attack(GameBoard gb){

@@ -2,6 +2,7 @@ package pack;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,10 +14,14 @@ public class Game {
     private String winner;
     private int ZordeNum;
     private int CallianceNum;
+    private String output;
+    private FileWriter writer;
     public Game(){
         this.ZordeNum += 1;
         this.CallianceNum += 1;
         this.winner = null;
+        this.output = "";
+
     }
     public void startGame(String inputFile){
         BufferedReader reader;
@@ -83,8 +88,8 @@ public class Game {
             e.printStackTrace();
         }
         this.gb.updateGrid();
-        this.gb.printGrid();
-        this.gb.currentHPs();
+        output += this.gb.printGrid();
+        output +=this.gb.currentHPs();
     }
     public void makeMovements(String commandsFile) {
 
@@ -93,7 +98,7 @@ public class Game {
             reader = new BufferedReader(new FileReader(commandsFile));
             String line = reader.readLine();
             Character c;
-            System.out.println();
+            output += "\n";
             ArrayList<Integer> moveX;
             ArrayList<Integer> moveY;
             while (line != null) {
@@ -105,7 +110,7 @@ public class Game {
                     continue;
                 String[] points = t[1].split(";");
                 if(points.length > 2*c.getMoveSteps()) {
-                    System.out.println("Error : Move sequence contains wrong number of move steps. Input line ignored.");
+                    output += "Error : Move sequence contains wrong number of move steps. Input line ignored.\n";
                     break;
                 }
                 for(int i = 0; i<points.length; i +=2){
@@ -114,13 +119,13 @@ public class Game {
                 }
                 this.move(c,moveX,moveY);
                 this.gb.updateGrid();
-                this.gb.printGrid();
-                this.gb.currentHPs();
+                output += this.gb.printGrid();
+                output +=this.gb.currentHPs();
                 if(this.isThereAWinner()){
-                    System.out.println("Game Finished\n" + winner +" Wins");
+                    output += "Game Finished\n" + winner +" Wins\n";
+                    System.out.print(output);
                     break;
                 }
-
                 line = reader.readLine();
             }
         } catch (IOException e) {
@@ -196,8 +201,8 @@ public class Game {
             c.setY(y);
         }
         catch (IndexOutOfBoundsException IE){
-            this.gb.printGrid();
-            System.out.println("Error : Game board boundaries are exceeded. Input line ignored");
+            output += this.gb.printGrid();
+            output += "Error : Game board boundaries are exceeded. Input line ignored\n";
         }
 
     }
@@ -207,5 +212,22 @@ public class Game {
         }
         else return c2 instanceof CallianceCharacter;
     }
+    public void printResult(String outFile){
 
+        try {
+            this.writer = new FileWriter(outFile);
+        }
+        catch (IOException e){
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        try {
+            this.writer.write(this.output);
+
+        }
+        catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
 }

@@ -22,6 +22,7 @@ public class Troll extends ZordeCharacter {
             this.y += iterY.next();
 
         }
+        gb.updateGrid();
         if(fight)
             this.fightForDeath(gb.grid[x][y]);
         else
@@ -43,6 +44,5 @@ public class Troll extends ZordeCharacter {
                 }
             }
         }
-        gb.updateGrid();
     }
 }

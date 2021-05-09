@@ -35,8 +35,6 @@ public class Ork extends ZordeCharacter {
     @Override
     public void move(GameBoard gb, ArrayList<Integer> moveX, ArrayList<Integer> moveY, boolean isFinalized, boolean fight){
         this.heal(gb);
-        int lastX = moveX.remove(moveX.size() -1);
-        int lastY = moveY.remove(moveY.size() -1);
         Iterator<Integer> iterX
                 = moveX.iterator();
         Iterator<Integer> iterY
@@ -45,8 +43,7 @@ public class Ork extends ZordeCharacter {
             this.x += iterX.next();
             this.y += iterY.next();
         }
-        this.x += lastX;
-        this.y += lastY;
+        gb.updateGrid();
         if(fight)
             this.fightForDeath(gb.grid[x][y]);
         else

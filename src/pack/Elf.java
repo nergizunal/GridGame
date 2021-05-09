@@ -37,14 +37,13 @@ public class Elf extends CallianceCharacter{
                 = moveX.iterator();
         Iterator<Integer> iterY
                 = moveY.iterator();
-
-
         while (iterX.hasNext() && iterY.hasNext()) {
             this.x += iterX.next();
             this.y += iterY.next();
             this.attack(gb);
 
         }
+        gb.updateGrid();
         this.x += lastX;
         this.y += lastY;
         if(isFinalized) {
